@@ -25,13 +25,26 @@ export default class NewBill {
     const fileName = filePath[filePath.length - 1];
     const fileExtension = file.type.split("/")[1];
     const extensionsAccepted = ["png", "jpeg", "jpg"];
+    const input = this.document.querySelector(`input[data-testid="file"]`);
 
     if (!extensionsAccepted.includes(fileExtension)) {
-      this.document.getElementById("btn-send-bill").disabled = true;
+      input.value = "";
+      input.classList.remove("blue-border");
+      input.style.border = "1px solid red";
+      const errorMessage = this.document.createElement("p");
+      errorMessage.classList.add("error-message");
+      errorMessage.innerHTML =
+        "Seul les formats png, jpeg ou jpg sont accéptés";
+      input.insertAdjacentElement("afterend", errorMessage);
+      errorMessage.style.color = "red";
       return;
     }
 
-    this.document.getElementById("btn-send-bill").disabled = false;
+    if (input.style.border === "1px solid red") {
+      input.classList.add("blue-border");
+      const errorMessage = this.document.querySelector(".error-message");
+      errorMessage.remove();
+    }
 
     const formData = new FormData();
     const email = JSON.parse(localStorage.getItem("user")).email;
